@@ -6,8 +6,8 @@ import pandas as pd
 from datetime import datetime
 import os
 
-# BASE_URL = "http://8.215.205.66:8000"
-BASE_URL = "http://127.0.0.1:8000"
+# BASE_URL = "http://8.215.205.66:8000" #ECS cloud server
+BASE_URL = "http://127.0.0.1:8000"      #Local 
 
 st.set_page_config(
     page_title="Merchant Dashboard - Financial Intelligence Platform",
