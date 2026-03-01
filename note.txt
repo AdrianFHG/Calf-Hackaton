@@ -1,0 +1,264 @@
+terminal 1: 
+uvicorn backend:app --reload
+
+http://127.0.0.1:8000/dashboard
+
+terminal 2: 
+streamlit run app.py
+
+
+Kalau backend jalan di Alibaba ECS, pastikan process aktif:
+
+Di server:
+
+uvicorn backend:app --host 0.0.0.0 --port 8000
+
+Kalau muncul:
+
+Uvicorn running on http://0.0.0.0:8000
+
+Buka browser dan cek satu-satu:
+
+1️⃣ Health Check
+http://8.215.205.66:8000/
+
+Harus muncul:
+
+{"status":"API Running"}
+
+2️⃣ Dashboard
+http://8.215.205.66:8000/dashboard
+
+Harus muncul JSON seperti:
+
+{
+  "this_month_revenue": ...,
+  "best_category": "...",
+  ...
+}
+
+3️⃣ Analytics
+http://8.215.205.66:8000/analytics
+4️⃣ Predict
+http://8.215.205.66:8000/predict
+5️⃣ Fraud Detection
+http://8.215.205.66:8000/fraud_detection
+
+FastAPI otomatis punya dokumentasi.
+
+Buka:
+
+http://8.215.205.66:8000/docs
+
+Ini akan tampil Swagger UI.
+
+Di sana kamu bisa:
+
+Klik setiap endpoint
+
+Tekan "Try it out"
+
+Lihat response langsung
+
+Kalau semua endpoint sukses → backend fully validated.
+
+Jalankan:
+
+streamlit run app.py
+
+Pastikan:
+
+Dashboard muncul
+
+Analytics chart muncul
+
+Predict chart muncul
+
+Fraud alert muncul
+
+Kalau ada error merah → lihat terminal.
+
+Di browser:
+
+Klik kanan
+
+Inspect
+
+Tab Console
+
+Pastikan tidak ada error CORS.
+
+Kalau ada CORS error → backend perlu middleware (yang sudah kita tambahkan tadi).
+
+🟢 STEP 6 — Stress Test Ringan (Optional Tapi Keren)
+
+Buka banyak tab sekaligus:
+
+http://8.215.205.66:8000/dashboard
+
+Kalau server tidak crash → stabil.
+
+
+save
+import streamlit as st
+import requests
+import pandas as pd
+import plotly.express as px
+
+# ==========================================
+# PAGE CONFIG
+# ==========================================
+st.set_page_config(layout="wide")
+
+# ==========================================
+# CUSTOM STYLE
+# ==========================================
+st.markdown("""
+    <style>
+    .big-title {
+        color: #00202e;
+        font-size: 34px;
+        font-weight: 700;
+    }
+    .stMetric {
+        background-color: white;
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("<div class='big-title'>💰 Smart Financial Dashboard</div>", unsafe_allow_html=True)
+st.write("AI-Powered Merchant Analytics")
+
+# ==========================================
+# FETCH DATA
+# ==========================================
+API_URL = "http://127.0.0.1:8000/dashboard"
+
+with st.spinner("Loading financial data..."):
+    response = requests.get(API_URL)
+
+if response.status_code != 200:
+    st.error("Backend not responding.")
+    st.stop()
+
+data = response.json()
+
+# ==========================================
+# TABS
+# ==========================================
+tab1, tab2, tab3 = st.tabs([
+    "📊 Overview",
+    "📈 Distribution",
+    "🧠 Insight"
+])
+
+# ==========================================
+# TAB 1 — OVERVIEW
+# ==========================================
+with tab1:
+
+    st.subheader("Key Metrics")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "This Month Revenue",
+        f"Rp {data['this_month_revenue']:,.0f}"
+    )
+    col2.metric("Best Category", data["best_category"])
+    col3.metric("Top Payment Method", data["top_payment_method"])
+    col4.metric("Top Region", data["top_region"])
+
+    st.divider()
+
+    st.subheader("Transaction Status Distribution")
+
+    status_df = pd.DataFrame({
+        "Status": data["this_month_status_percentage"].keys(),
+        "Percentage": data["this_month_status_percentage"].values()
+    })
+
+    fig_status = px.pie(
+        status_df,
+        names="Status",
+        values="Percentage",
+        hole=0.5,
+        color_discrete_sequence=["#f55c1a", "#f28705", "#24c3b9"]
+    )
+
+    st.plotly_chart(fig_status, use_container_width=True)
+
+# ==========================================
+# TAB 2 — DISTRIBUTION
+# ==========================================
+with tab2:
+
+    st.subheader("Category Distribution")
+
+    category_df = pd.DataFrame({
+        "Category": data["this_month_category_percentage"].keys(),
+        "Percentage": data["this_month_category_percentage"].values()
+    })
+
+    category_df = category_df.sort_values(by="Percentage", ascending=False)
+
+    fig_category = px.bar(
+        category_df.head(10),
+        x="Percentage",
+        y="Category",
+        orientation="h",
+        color="Percentage",
+        color_continuous_scale=["#24c3b9", "#f55c1a"]
+    )
+
+    st.plotly_chart(fig_category, use_container_width=True)
+
+    st.divider()
+
+    st.subheader("Payment Method Distribution")
+
+    payment_df = pd.DataFrame({
+        "Method": data["this_month_payment_percentage"].keys(),
+        "Percentage": data["this_month_payment_percentage"].values()
+    })
+
+    fig_payment = px.pie(
+        payment_df,
+        names="Method",
+        values="Percentage",
+        hole=0.4,
+        color_discrete_sequence=[
+            "#f55c1a",
+            "#f28705",
+            "#24c3b9",
+            "#00202e",
+            "#FFA756",
+            "#4DD0C8"
+        ]
+    )
+
+    st.plotly_chart(fig_payment, use_container_width=True)
+
+# ==========================================
+# TAB 3 — AI INSIGHT
+# ==========================================
+with tab3:
+
+    st.subheader("AI Financial Summary")
+
+    insight = f"""
+    📌 Revenue this month reached Rp {data['this_month_revenue']:,.0f}.  
+
+    🏆 Best performing category: **{data['best_category']}**.  
+
+    💳 Most used payment method: **{data['top_payment_method']}**.  
+
+    🌏 Top region: **{data['top_region']}**.  
+
+    📊 Transaction success rate is {data['this_month_status_percentage']['Success']}%.
+    """
+
+    st.info(insight)
