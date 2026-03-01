@@ -116,7 +116,7 @@ async def get_cached_ai_recommendation(cache_key: str, prompt_content: str):
     
     cache_data[cache_key] = {"date": today, "content": new_response}
     with open(CACHE_FILE, "w") as f:
-        json.dump(cache_data, f)
+        json.dump(cache_data, f, indent=4)
         
     return new_response
 

@@ -1,1 +1,14 @@
-{"dashboard_advice": {"date": "2026-03-01", "content": "1. Optimize payment processing to reduce failed transactions and improve success rate, enhancing revenue stability.  \n2. Focus on high-performing regions (e.g., China) and categories (e.g., Lampu & Pencahayaan) to drive targeted growth.  \n3. Monitor expenses closely to maintain efficiency, leveraging the slight expense reduction trend."}, "predict_insight": {"date": "2026-03-01", "content": "1. Optimize marketing spend by targeting high-converting channels to boost daily revenue.  \n2. Streamline operations to reduce expenses and improve profit margins.  \n3. Implement dynamic pricing strategies to maximize daily sales volume."}, "fraud_alert": {"date": "2026-03-01", "content": "**Security Alert Report**\n\n1. **What to watch out for:** High velocity transactions and medium risk score suggest potential bot or account takeover activity. Pending transactions (32.1%) may indicate delayed fraud detection.\n\n2. **Types of fraud:** Likely card-not-present (CNP) fraud, synthetic identity fraud, or automated transaction stuffing.\n\n3. **High-risk items:** High velocity warning and 33.9% failed transactions signal possible fraud rings or system exploitation. These could lead to financial loss and reputational damage.\n\n4. **Actionable measures:** Implement real-time velocity controls and enhance fraud scoring for Indonesian regions. Monitor pending transactions closely for patterns."}}
+{
+    "dashboard_advice": {
+        "date": "2026-03-01",
+        "content": "1. Optimize pricing strategies for high-volume categories like \"Lampu & Pencahayaan\" to boost revenue.  \n2. Improve transaction success rate by enhancing payment gateway reliability and user support.  \n3. Focus on China's market with targeted marketing to sustain growth and increase operational efficiency."
+    },
+    "predict_insight": {
+        "date": "2026-03-01",
+        "content": "1. Optimize inventory turnover to reduce holding costs and boost revenue.  \n2. Launch targeted promotions to increase daily sales volume.  \n3. Negotiate better supplier terms to lower expenses and improve cash flow."
+    },
+    "fraud_alert": {
+        "date": "2026-03-01",
+        "content": "**Security Alert Report**\n\n1. **What to watch out for:** High velocity transactions and medium risk score suggest potential bot or account takeover activity. Pending transactions (32.1%) may indicate delayed fraud detection.\n\n2. **Types of fraud:** Likely card-not-present (CNP) fraud, chargeback fraud, and synthetic identity theft.\n\n3. **High-risk issues:** Medium risk score with 33.9% failed transactions indicates possible fraud attempts. High velocity warning is urgent, as it may signal automated attacks.\n\n4. **Actionable measures:** Implement real-time transaction monitoring and enhance fraud scoring for Indonesian region."
+    }
+}
